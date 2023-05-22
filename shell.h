@@ -21,7 +21,7 @@ int prompt(void);
 char *_read(void);
 char *_fullpathbuffer(char **av, char *PATH, char *copy);
 int checkbuiltins(char **av, char *buffer, int exitstatus);
-int _forkprocess(char **av , char *buffer, char *fullpathbuffer);
+int _forkprocess(char **av, char *buffer, char *fullpathbuffer);
 
 /* Str Help functions*/
 

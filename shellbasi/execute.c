@@ -4,30 +4,44 @@
 
 pid_t exec_cmd(char **args, char **av)
 {
-	pid_t pid;
-	int cmd;
+    char *buffer = NULL;
+    pid_t pid;
+    int i, status, exitstatus, cmd = 0;
 
-	pid = fork();
+    pid = fork();
 
-	if (pid == 0)
+    if (pid == -1)
+    {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+    else if (pid == 0)
+    {
+        cmd = execve(args[0], args, NULL);
+        if (cmd == -1)
 	{
-		cmd = execve(args[0], args, NULL);
-		if (cmd == -1)
-		{
-			perror(av[0]);
-			exit(-1);
-		}
-		exit(-2);
-	}
-	else if (pid > 0)
+            perror(args[0]);
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        if (wait(&status) == -1)
 	{
-		wait(NULL);
-	}
-	else
+            perror("wait");
+            exit(EXIT_FAILURE);
+        }
+	if (WIFEXITED(status))
 	{
-		perror(av[0]);
-		exit(-3);
+		exitstatus = WEXITSTATUS(status);
 	}
-
-	return (pid);
+	for (i = 0; av[i]; i++)
+	
+	free(av[i]);
+	free(av);
+	free(buffer);
+	return (exitstatus);
+    }
+    return (pid);
 }
+

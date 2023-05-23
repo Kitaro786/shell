@@ -50,7 +50,7 @@ int main(int ac, char **av, char **env)
 			perror(av[0]);
 			continue;
 		}
-
+		
 		exec_cmd(args, av);
 
 		free(args);

@@ -49,28 +49,3 @@ char *get_input(int ac, char **av)
 
     return input;
 }
-
-int Exitcode(void)
-{
-    char *input;
-
-    while (1)
-    {
-        input = get_input(0, NULL);
-
-        /* Check for Ctrl+D (EOF) to exit the shell */
-        if (input == NULL)
-        {
-            printf("\n");
-            exit(0);
-        }
-
-        /* Do something with the input */
-        printf("Input: %s\n", input);
-
-        /*  Free the input memory */
-        free(input);
-    }
-
-    return 0;
-}

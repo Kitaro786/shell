@@ -1,27 +1,16 @@
 #include "main.h"
 
-/**
- * _putchar - prints to stdout
- * @c: char to print
- * Return: 1 on success
- */
 int _putchar(char c)
 {
-    return (write(1, &c, 1));
+    return write(1, &c, 1);
 }
 
-/**
- * get_input - prints prompt if shell interactive & gets user input
- * @ac: no. of arguments
- * @av: list of arguments
- * Return: pointer to input on success, NULL on failure or EOF
- */
 char *get_input(int ac, char **av)
 {
     unsigned int i;
     char prompt[] = "Shell$ ";
     char *input = NULL;
-    size_t l = 0;
+    size_t l;
     ssize_t r;
 
     (void)ac;
@@ -36,23 +25,22 @@ char *get_input(int ac, char **av)
     }
 
     r = getline(&input, &l, stdin);
-    if (r == -1 || input == NULL)
+    if (r == -1)
     {
-        free(input);
-        return NULL;
+        if (feof(stdin))
+        {
+            free(input);
+            printf("\n");
+            exit(0);
+        }
+        else
+        {
+            perror("getline");
+            free(input);
+            return NULL;
+        }
     }
-
-    if (feof(stdin))
-    {
-        free(input);
-        exit(0);
-    }
-
-    if (input[strlen(input) - 1] == '\n')
-    {
-        input[strlen(input) - 1] = '\0';
-    }
-
+    strtok(input, "\n");
     if (strcmp(input, "exit") == 0)
     {
         free(input);
@@ -60,4 +48,29 @@ char *get_input(int ac, char **av)
     }
 
     return input;
+}
+
+int Exitcode(void)
+{
+    char *input;
+
+    while (1)
+    {
+        input = get_input(0, NULL);
+
+        /* Check for Ctrl+D (EOF) to exit the shell */
+        if (input == NULL)
+        {
+            printf("\n");
+            exit(0);
+        }
+
+        /* Do something with the input */
+        printf("Input: %s\n", input);
+
+        /*  Free the input memory */
+        free(input);
+    }
+
+    return 0;
 }
